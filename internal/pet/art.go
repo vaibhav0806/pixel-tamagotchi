@@ -52,6 +52,17 @@ var messages = map[Mood][]string{
 	},
 }
 
+func RenderWithBlink(mood Mood, blinkOpen bool) string {
+	face := faceFor(mood)
+	if !blinkOpen {
+		face = "-.-"
+	}
+	paws := pawsFor(mood)
+	emoji := mood.Emoji()
+
+	return fmt.Sprintf("   %s\n /\\_/\\\n( %s )\n %s", emoji, face, paws)
+}
+
 func RandomMessage(mood Mood) string {
 	pool := messages[mood]
 	if len(pool) == 0 {
