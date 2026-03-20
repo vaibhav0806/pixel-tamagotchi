@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 	"time"
-	"unicode/utf8"
 
 	"github.com/charmbracelet/bubbles/progress"
 	"github.com/charmbracelet/lipgloss"
@@ -13,9 +12,9 @@ import (
 
 const (
 	canvasWidth  = 30
-	canvasHeight = 11
+	canvasHeight = 10
 	catStartRow  = 1
-	catStartCol  = 9
+	catStartCol  = 7
 )
 
 func (m Model) View() string {
@@ -193,24 +192,10 @@ func (m Model) renderCanvas() string {
 
 // overrideEyes replaces the face expression in a cat art string with closed eyes.
 func overrideEyes(art string) string {
-	lines := strings.Split(art, "\n")
-	for i, line := range lines {
-		if strings.Contains(line, "(") && strings.Contains(line, ")") {
-			openParen := strings.Index(line, "(")
-			closeParen := strings.LastIndex(line, ")")
-			if closeParen > openParen {
-				inner := line[openParen+1 : closeParen]
-				runeCount := utf8.RuneCountInString(inner)
-				var face string
-				if runeCount >= 5 {
-					padding := runeCount - 5
-					face = " -.- " + strings.Repeat(" ", padding)
-				} else {
-					face = " -.- "[:runeCount]
-				}
-				lines[i] = line[:openParen+1] + face + line[closeParen:]
-			}
-		}
+	// Simple string replacement for known face patterns.
+	result := art
+	for _, face := range []string{"o.o", "^.^", "T.T", ";_;", ">.<"} {
+		result = strings.Replace(result, face, "-.-", 1)
 	}
-	return strings.Join(lines, "\n")
+	return result
 }

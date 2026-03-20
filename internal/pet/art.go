@@ -3,66 +3,122 @@ package pet
 import (
 	"fmt"
 	"math/rand"
+	"strings"
 	"time"
 )
 
 func Render(mood Mood) string {
-	face := faceFor(mood)
-	paws := pawsFor(mood)
-	emoji := mood.Emoji()
-
-	return fmt.Sprintf("    %s\n  /\\_/\\\n ( %s )\n  %s\n /|   |\\\n(_|   |_)\n   \" \"", emoji, face, paws)
-}
-
-func faceFor(mood Mood) string {
-	switch mood {
-	case MoodHappy, MoodHungry:
-		return "o.o"
-	case MoodSad:
-		return "T.T"
-	case MoodAsleep:
-		return "-.-"
-	default:
-		return "o.o"
-	}
-}
-
-func pawsFor(mood Mood) string {
-	if mood == MoodHappy {
-		return "> ^ <"
-	}
-	return "> ~ <"
+	frames := AnimationFrames(mood)
+	return frames[0]
 }
 
 // AnimationFrames returns all animation frames for a given mood.
 // Each frame is a complete 7-line cat art string.
+// All frames are exactly 7 lines for consistent canvas rendering.
 func AnimationFrames(mood Mood) []string {
-	emoji := mood.Emoji()
 	switch mood {
 	case MoodHappy:
 		return []string{
-			fmt.Sprintf("    %s\n  /\\_/\\\n ( o.o )\n  > ^ <\n /|   |\\\n(_|   |_)\n   \" \"", emoji),
-			fmt.Sprintf("    %s\n  /\\_/\\\n ( ^.^ )\n  > ^ <\n /|   |\\\n(_|   |_)\n   ~ ~", emoji),
-			fmt.Sprintf("    %s\n  /\\_/\\\n ( o.o )\n  /> </\n /|   |\\\n(_|   |_)\n   \" \"", emoji),
+			// Alert, tail up, whiskers out
+			"        " + mood.Emoji() + "\n" +
+				"    /\\_/\\  )\n" +
+				"  =( o.o )=\n" +
+				"    )   (\n" +
+				"   (     )\n" +
+				"    |   |\n" +
+				"   =|___|=",
+			// Smiling, tail wag
+			"        " + mood.Emoji() + "\n" +
+				"    /\\_/\\  ~\n" +
+				"  =( ^.^ )=\n" +
+				"    )   (\n" +
+				"   ( ~ ~ )\n" +
+				"    |   |\n" +
+				"   =|___|=",
+			// Playful paws
+			"     " + mood.Emoji() + "\n" +
+				"  (  /\\_/\\\n" +
+				"  =( o.o )=\n" +
+				"    )   (\n" +
+				"   (     )\n" +
+				"    |   |\n" +
+				"   =|___|=",
 		}
 	case MoodHungry:
 		return []string{
-			fmt.Sprintf("    %s\n  /\\_/\\\n ( o.o )\n  > ~ <\n /|   |\\\n(_|   |_)\n   \" \"", emoji),
-			fmt.Sprintf("    %s\n  /\\_/\\\n ( o.o )\u3064\n  > ~ <\n /|   |\\\n(_|   |_)\n   \" \"", emoji),
-			fmt.Sprintf("    %s\n  /\\_/\\\n ( >.< )\n  > ~ <\n /|   |\\\n(_|   |_)\n   \" \"", emoji),
+			// Sitting, looking up at food
+			"       " + mood.Emoji() + "\n" +
+				"    /\\_/\\\n" +
+				"  =( o.o )=\n" +
+				"    )   (\n" +
+				"   (     )\n" +
+				"    |   |\n" +
+				"   =|___|=",
+			// Reaching for food
+			"       " + mood.Emoji() + "\n" +
+				"    /\\_/\\\n" +
+				"  =( o.o )=" + "\u3064" + "\n" +
+				"    )   (\n" +
+				"   (     )\n" +
+				"    |   |\n" +
+				"   =|___|=",
+			// Frustrated
+			"       " + mood.Emoji() + "\n" +
+				"    /\\_/\\\n" +
+				"  =( >.< )=\n" +
+				"    )   (\n" +
+				"   (     )\n" +
+				"    |   |\n" +
+				"   =|___|=",
 		}
 	case MoodSad:
 		return []string{
-			fmt.Sprintf("    %s\n  /\\_/\\\n ( T.T )\n  > ~ <\n /|   |\\\n(_|   |_)\n   \" \"", emoji),
-			fmt.Sprintf("    %s\n  /\\_/\\\n ( ;_; )\n  < ~ >\n /|   |\\\n(_|   |_)\n   \" \"", emoji),
+			// Curled up, crying
+			"       " + mood.Emoji() + "\n" +
+				"    /\\_/\\\n" +
+				"  =( T.T )=\n" +
+				"    )   (\n" +
+				"   (     )\n" +
+				"    )   (\n" +
+				"     \\_/",
+			// More crying, swaying
+			"       " + mood.Emoji() + "\n" +
+				"    /\\_/\\\n" +
+				"  =( ;_; )=\n" +
+				"    )   (\n" +
+				"   (     )\n" +
+				"    )   (\n" +
+				"     \\_/",
 		}
 	case MoodAsleep:
 		return []string{
-			fmt.Sprintf("    %s\n  /\\_/\\\n ( -.- )\n  > ~ <\n /|   |\\\n(_|   |_)\n   \" \"", emoji),
-			fmt.Sprintf("    %s\n  /\\_/\\\n ( -.- )\n  >   <\n /|   |\\\n( _| |_ )\n   \" \"", emoji),
+			// Curled into ball
+			"       " + mood.Emoji() + "\n" +
+				"    /\\_/\\\n" +
+				"  =( -.- )=\n" +
+				"    )   (\n" +
+				"   ( ~~~ )\n" +
+				"    \\___/\n" +
+				"",
+			// Breathing
+			"       " + mood.Emoji() + "\n" +
+				"    /\\_/\\\n" +
+				"  =( -.- )=\n" +
+				"    )    (\n" +
+				"   (  ~  )\n" +
+				"    \\___/\n" +
+				"",
 		}
 	default:
-		return []string{Render(mood)}
+		return []string{
+			"        " + mood.Emoji() + "\n" +
+				"    /\\_/\\\n" +
+				"  =( o.o )=\n" +
+				"    )   (\n" +
+				"   (     )\n" +
+				"    |   |\n" +
+				"   =|___|=",
+		}
 	}
 }
 
@@ -73,21 +129,7 @@ func EarTwitchFrame(mood Mood, frameIdx int) string {
 		frameIdx = 0
 	}
 	frame := frames[frameIdx]
-	// Replace normal ears with twitched ears
-	return replaceFirst(frame, `/\_/\`, `/\~/\`)
-}
-
-func replaceFirst(s, old, new string) string {
-	i := 0
-	for j := 0; j < len(s)-len(old)+1; j++ {
-		if s[j:j+len(old)] == old {
-			if i == 0 {
-				return s[:j] + new + s[j+len(old):]
-			}
-			i++
-		}
-	}
-	return s
+	return strings.Replace(frame, `/\_/\`, `/\~/\`, 1)
 }
 
 var messages = map[Mood][]string{
@@ -137,14 +179,15 @@ var messages = map[Mood][]string{
 }
 
 func RenderWithBlink(mood Mood, blinkOpen bool) string {
-	face := faceFor(mood)
+	frame := Render(mood)
 	if !blinkOpen {
-		face = "-.-"
+		frame = strings.Replace(frame, "o.o", "-.-", 1)
+		frame = strings.Replace(frame, "^.^", "-.-", 1)
+		frame = strings.Replace(frame, "T.T", "-.-", 1)
+		frame = strings.Replace(frame, ";_;", "-.-", 1)
+		frame = strings.Replace(frame, ">.<", "-.-", 1)
 	}
-	paws := pawsFor(mood)
-	emoji := mood.Emoji()
-
-	return fmt.Sprintf("    %s\n  /\\_/\\\n ( %s )\n  %s\n /|   |\\\n(_|   |_)\n   \" \"", emoji, face, paws)
+	return frame
 }
 
 func RandomMessage(mood Mood) string {
