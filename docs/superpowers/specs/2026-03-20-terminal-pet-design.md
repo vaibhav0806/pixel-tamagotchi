@@ -41,7 +41,7 @@ Pure ASCII with monospace rendering. Emoji floats above the head. Face expressio
 
 1. **CLI (`terminal-pet`)** — Cobra-based with subcommands
 2. **State file (`~/.terminal-pet/state.json`)** — Pet state persisted to disk
-3. **Config file (`~/.terminal-pet/config.json`)** — User preferences (scan directories)
+3. **Config file (`~/.terminal-pet/config.json`)** — Stores scan directories from `init` (used for seeding initial state and potential future re-scans)
 4. **Global git hook (`~/.terminal-pet/hooks/post-commit`)** — Updates state on every commit
 
 ### Data Flow
@@ -81,7 +81,7 @@ No background daemon. The git hook is the event source, the CLI is the reader.
 - `last_commit_at`: Updated by the post-commit hook. Used to compute mood.
 - `created_at`: Set during `init`. For display purposes.
 - `total_commits`: Incremented by the hook. Lifetime counter.
-- `current_streak`: Consecutive days with at least one commit. Resets if a full calendar day passes with no commit.
+- `current_streak`: Consecutive days with at least one commit. Resets if a full calendar day (local time) passes with no commit.
 
 ## CLI Commands
 
