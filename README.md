@@ -97,6 +97,10 @@ pixel watch --mood sad
 pixel watch --mood asleep
 ```
 
+## How it works
+
+Pixel uses a global git `post-commit` hook to detect when you commit — in any repo on your machine. No background daemon, no network calls, no data leaves your computer. Your commit timestamps are stored locally in `~/.pixel-tamagotchi/state.json`.
+
 ## Built with
 
 - [Cobra](https://github.com/spf13/cobra) — CLI framework

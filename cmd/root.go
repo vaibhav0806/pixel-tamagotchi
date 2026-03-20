@@ -75,7 +75,7 @@ func runStatus(cmd *cobra.Command, args []string) error {
 		fmt.Println(wb.Render("  🎉 Pixel woke up! She missed you so much!"))
 		// Clear the flag
 		state.WelcomeBack = false
-		pet.SaveState(state, statePath)
+		_ = pet.SaveState(state, statePath)
 	}
 
 	return nil

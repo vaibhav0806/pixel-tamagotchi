@@ -46,7 +46,9 @@ func GenerateHookScript() string {
 
 	return fmt.Sprintf(`#!/bin/sh
 # pixel-tamagotchi post-commit hook
-"%s" update-state 2>/dev/null &
+BIN="%s"
+if [ ! -x "$BIN" ]; then BIN="pixel-tamagotchi"; fi
+"$BIN" update-state 2>/dev/null &
 
 # Chain existing hooks if present
 ORIGINAL_HOOKS="$HOME/.pixel-tamagotchi/original-hooks-path"
