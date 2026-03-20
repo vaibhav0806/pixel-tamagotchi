@@ -60,17 +60,21 @@ async function install() {
   const tmpFile = path.join(__dirname, `tmp${ext}`);
   fs.writeFileSync(tmpFile, data);
 
-  const binName = os === "windows" ? "pixel-tamagotchi.exe" : "pixel-tamagotchi";
+  const archiveBinName = os === "windows" ? "pixel-tamagotchi.exe" : "pixel-tamagotchi";
+  const binName = os === "windows" ? "pixel-tamagotchi-bin.exe" : "pixel-tamagotchi-bin";
 
   try {
     if (ext === ".tar.gz") {
-      execSync(`tar -xzf "${tmpFile}" -C "${binDir}" "${binName}"`, { stdio: "pipe" });
+      execSync(`tar -xzf "${tmpFile}" -C "${binDir}" "${archiveBinName}"`, { stdio: "pipe" });
+      // Rename to avoid overwriting the JS wrapper
+      fs.renameSync(path.join(binDir, archiveBinName), path.join(binDir, binName));
     } else {
       // Windows zip — use PowerShell
       execSync(
         `powershell -command "Expand-Archive -Path '${tmpFile}' -DestinationPath '${binDir}' -Force"`,
         { stdio: "pipe" }
       );
+      fs.renameSync(path.join(binDir, archiveBinName), path.join(binDir, binName));
     }
 
     const binPath = path.join(binDir, binName);
