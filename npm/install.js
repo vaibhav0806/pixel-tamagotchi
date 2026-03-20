@@ -2,6 +2,7 @@ const { execSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const https = require("https");
+const os_mod = require("os");
 
 const VERSION = require("./package.json").version;
 const REPO = "vaibhav0806/pixel-tamagotchi";
@@ -57,34 +58,36 @@ async function install() {
   const binDir = path.join(__dirname, "bin");
   fs.mkdirSync(binDir, { recursive: true });
 
-  const tmpFile = path.join(__dirname, `tmp${ext}`);
+  // Extract to a temp dir first so we don't clobber the JS wrapper in bin/
+  const tmpDir = fs.mkdtempSync(path.join(os_mod.tmpdir(), "pixel-tamagotchi-"));
+  const tmpFile = path.join(tmpDir, `archive${ext}`);
   fs.writeFileSync(tmpFile, data);
 
   const archiveBinName = os === "windows" ? "pixel-tamagotchi.exe" : "pixel-tamagotchi";
-  const binName = os === "windows" ? "pixel-tamagotchi-bin.exe" : "pixel-tamagotchi-bin";
+  const destName = os === "windows" ? "pixel-tamagotchi-bin.exe" : "pixel-tamagotchi-bin";
 
   try {
     if (ext === ".tar.gz") {
-      execSync(`tar -xzf "${tmpFile}" -C "${binDir}" "${archiveBinName}"`, { stdio: "pipe" });
-      // Rename to avoid overwriting the JS wrapper
-      fs.renameSync(path.join(binDir, archiveBinName), path.join(binDir, binName));
+      execSync(`tar -xzf "${tmpFile}" -C "${tmpDir}" "${archiveBinName}"`, { stdio: "pipe" });
     } else {
-      // Windows zip — use PowerShell
       execSync(
-        `powershell -command "Expand-Archive -Path '${tmpFile}' -DestinationPath '${binDir}' -Force"`,
+        `powershell -command "Expand-Archive -Path '${tmpFile}' -DestinationPath '${tmpDir}' -Force"`,
         { stdio: "pipe" }
       );
-      fs.renameSync(path.join(binDir, archiveBinName), path.join(binDir, binName));
     }
 
-    const binPath = path.join(binDir, binName);
+    // Move binary to bin/ with the -bin suffix
+    const src = path.join(tmpDir, archiveBinName);
+    const dest = path.join(binDir, destName);
+    fs.copyFileSync(src, dest);
+
     if (os !== "windows") {
-      fs.chmodSync(binPath, 0o755);
+      fs.chmodSync(dest, 0o755);
     }
 
-    console.log(`Installed pixel-tamagotchi to ${binPath}`);
+    console.log(`Installed pixel-tamagotchi to ${dest}`);
   } finally {
-    fs.unlinkSync(tmpFile);
+    fs.rmSync(tmpDir, { recursive: true, force: true });
   }
 }
 
