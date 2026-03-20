@@ -14,6 +14,7 @@ type State struct {
 	TotalCommits  int       `json:"total_commits"`
 	CurrentStreak int       `json:"current_streak"`
 	BestStreak    int       `json:"best_streak"`
+	WelcomeBack   bool      `json:"welcome_back,omitempty"`
 }
 
 func LoadState(path string) (*State, error) {
@@ -41,6 +42,12 @@ func SaveState(s *State, path string) error {
 
 func RecordCommit(s *State) {
 	now := time.Now()
+
+	// Check if Pixel was sad or asleep before this commit
+	oldMood := ComputeMood(s.LastCommitAt)
+	if oldMood == MoodSad || oldMood == MoodAsleep {
+		s.WelcomeBack = true
+	}
 
 	lastYear, lastMonth, lastDay := s.LastCommitAt.Local().Date()
 	lastMidnight := time.Date(lastYear, lastMonth, lastDay, 0, 0, 0, 0, time.Local)

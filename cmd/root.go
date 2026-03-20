@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"runtime/debug"
 	"time"
 
 	"github.com/charmbracelet/lipgloss"
@@ -11,8 +12,14 @@ import (
 	"github.com/vaibhav0806/pixel-tamagotchi/internal/pet"
 )
 
-// Version is set at build time via ldflags.
-var Version = "dev"
+// Version is set at build time via ldflags. Falls back to module version
+// from debug.ReadBuildInfo() for go install users.
+var Version = func() string {
+	if info, ok := debug.ReadBuildInfo(); ok && info.Main.Version != "" && info.Main.Version != "(devel)" {
+		return info.Main.Version
+	}
+	return "dev"
+}()
 
 var rootCmd = &cobra.Command{
 	Use:     "pixel",
@@ -61,6 +68,15 @@ func runStatus(cmd *cobra.Command, args []string) error {
 
 	fmt.Println(style.Render(art) + "   " + msg)
 	fmt.Println(style.Render("          " + stats))
+
+	if state.WelcomeBack {
+		wb := lipgloss.NewStyle().Foreground(lipgloss.Color("#fbbf24")).Bold(true)
+		fmt.Println()
+		fmt.Println(wb.Render("  🎉 Pixel woke up! She missed you so much!"))
+		// Clear the flag
+		state.WelcomeBack = false
+		pet.SaveState(state, statePath)
+	}
 
 	return nil
 }
