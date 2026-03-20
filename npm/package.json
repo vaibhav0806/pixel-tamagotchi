@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "description": "A tamagotchi cat that lives in your terminal",
   "bin": {
-    "pixel-tamagotchi": "bin/pixel-tamagotchi"
+    "pixel-tamagotchi": "bin/pixel-tamagotchi",
+    "pixel": "bin/pixel-tamagotchi"
   },
   "scripts": {
     "postinstall": "node install.js"

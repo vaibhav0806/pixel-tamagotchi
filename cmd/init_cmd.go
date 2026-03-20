@@ -111,7 +111,7 @@ func runInit(cmd *cobra.Command, args []string) error {
 	fmt.Println(pet.Render(pet.ComputeMood(state.LastCommitAt)))
 	fmt.Println()
 	fmt.Println("Pixel has arrived! He'll track your commits automatically.")
-	fmt.Println("Run 'pixel-tamagotchi' anytime to check on him.")
+	fmt.Println("Run 'pixel' anytime to check on him.")
 
 	return nil
 }

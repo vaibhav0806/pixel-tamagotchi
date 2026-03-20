@@ -45,7 +45,7 @@ Grab the latest release from [GitHub Releases](https://github.com/vaibhav0806/pi
 ## Setup
 
 ```bash
-pixel-tamagotchi init
+pixel init
 ```
 
 This sets up a global git post-commit hook so Pixel knows every time you commit, in any repo. If you already have a global `core.hooksPath`, it chains to your existing hooks.
@@ -55,13 +55,13 @@ This sets up a global git post-commit hook so Pixel knows every time you commit,
 **Check on Pixel:**
 
 ```bash
-pixel-tamagotchi
+pixel
 ```
 
 **Open the animated dashboard:**
 
 ```bash
-pixel-tamagotchi watch
+pixel watch
 ```
 
 The dashboard shows Pixel with live animations, floating particles, a mood bar, commit streak, and rotating status messages. Press `q` to quit.
@@ -83,21 +83,23 @@ No permadeath. Pixel always comes back.
 
 | Command | Description |
 |---------|-------------|
-| `pixel-tamagotchi` | Quick status check |
-| `pixel-tamagotchi init` | Set up Pixel and install git hook |
-| `pixel-tamagotchi watch` | Animated TUI dashboard |
-| `pixel-tamagotchi reset` | Wake Pixel up, reset streak |
-| `pixel-tamagotchi uninstall` | Remove hooks and clean up |
+| `pixel` | Quick status check |
+| `pixel init` | Set up Pixel and install git hook |
+| `pixel watch` | Animated TUI dashboard |
+| `pixel reset` | Wake Pixel up, reset streak |
+| `pixel uninstall` | Remove hooks and clean up |
+
+`pixel-tamagotchi` also works as an alias for all commands.
 
 ## Dev
 
 Test different moods without waiting:
 
 ```bash
-pixel-tamagotchi watch --mood happy
-pixel-tamagotchi watch --mood hungry
-pixel-tamagotchi watch --mood sad
-pixel-tamagotchi watch --mood asleep
+pixel watch --mood happy
+pixel watch --mood hungry
+pixel watch --mood sad
+pixel watch --mood asleep
 ```
 
 ## Built with

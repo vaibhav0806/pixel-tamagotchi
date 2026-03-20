@@ -24,7 +24,7 @@ func runReset(cmd *cobra.Command, args []string) error {
 
 	state, err := pet.LoadState(statePath)
 	if err != nil {
-		fmt.Println("Pixel isn't here yet! Run 'pixel-tamagotchi init' first.")
+		fmt.Println("Pixel isn't here yet! Run 'pixel init' first.")
 		return nil
 	}
 
