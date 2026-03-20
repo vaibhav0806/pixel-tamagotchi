@@ -26,6 +26,12 @@ func init() {
 }
 
 func runInit(cmd *cobra.Command, args []string) error {
+	statePath := config.DefaultStatePath()
+	if _, err := os.Stat(statePath); err == nil {
+		fmt.Println("Pixel is already here! If you want to start fresh, run 'terminal-pet uninstall' first.")
+		return nil
+	}
+
 	baseDir := config.DefaultDir()
 	if err := os.MkdirAll(baseDir, 0755); err != nil {
 		return fmt.Errorf("create base dir: %w", err)

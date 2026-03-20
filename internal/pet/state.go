@@ -2,7 +2,10 @@ package pet
 
 import (
 	"encoding/json"
+	"io"
 	"os"
+	"path/filepath"
+	"syscall"
 	"time"
 )
 
@@ -26,6 +29,9 @@ func LoadState(path string) (*State, error) {
 }
 
 func SaveState(s *State, path string) error {
+	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+		return err
+	}
 	data, err := json.MarshalIndent(s, "", "  ")
 	if err != nil {
 		return err
@@ -36,14 +42,18 @@ func SaveState(s *State, path string) error {
 func RecordCommit(s *State) {
 	now := time.Now()
 
-	lastDay := s.LastCommitAt.Local().Truncate(24 * time.Hour)
-	today := now.Local().Truncate(24 * time.Hour)
-	diff := today.Sub(lastDay)
+	lastYear, lastMonth, lastDay := s.LastCommitAt.Local().Date()
+	lastMidnight := time.Date(lastYear, lastMonth, lastDay, 0, 0, 0, 0, time.Local)
+
+	nowYear, nowMonth, nowDay := now.Local().Date()
+	todayMidnight := time.Date(nowYear, nowMonth, nowDay, 0, 0, 0, 0, time.Local)
+
+	daysDiff := int(todayMidnight.Sub(lastMidnight).Hours() / 24)
 
 	switch {
-	case diff == 24*time.Hour:
+	case daysDiff == 1:
 		s.CurrentStreak++
-	case diff == 0:
+	case daysDiff == 0:
 		// same day, streak unchanged
 	default:
 		s.CurrentStreak = 1
@@ -51,4 +61,47 @@ func RecordCommit(s *State) {
 
 	s.LastCommitAt = now
 	s.TotalCommits++
+}
+
+func LoadAndUpdate(path string, fn func(*State)) error {
+	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+		return err
+	}
+
+	f, err := os.OpenFile(path, os.O_RDWR, 0644)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	if err := syscall.Flock(int(f.Fd()), syscall.LOCK_EX); err != nil {
+		return err
+	}
+	defer syscall.Flock(int(f.Fd()), syscall.LOCK_UN)
+
+	data, err := io.ReadAll(f)
+	if err != nil {
+		return err
+	}
+
+	var s State
+	if err := json.Unmarshal(data, &s); err != nil {
+		return err
+	}
+
+	fn(&s)
+
+	out, err := json.MarshalIndent(&s, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	if err := f.Truncate(0); err != nil {
+		return err
+	}
+	if _, err := f.Seek(0, 0); err != nil {
+		return err
+	}
+	_, err = f.Write(out)
+	return err
 }

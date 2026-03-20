@@ -18,14 +18,7 @@ func init() {
 }
 
 func runUpdateState(cmd *cobra.Command, args []string) error {
-	statePath := config.DefaultStatePath()
-
-	state, err := pet.LoadState(statePath)
-	if err != nil {
-		return err
-	}
-
-	pet.RecordCommit(state)
-
-	return pet.SaveState(state, statePath)
+	return pet.LoadAndUpdate(config.DefaultStatePath(), func(s *pet.State) {
+		pet.RecordCommit(s)
+	})
 }
