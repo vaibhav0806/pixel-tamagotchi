@@ -6,16 +6,17 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/charmbracelet/bubbles/progress"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/vaibhav/terminal-pet/internal/pet"
 )
 
 const (
-	canvasWidth  = 25
-	canvasHeight = 12
+	canvasWidth  = 30
+	canvasHeight = 15
 	// Cat art is placed starting at this row/col in the canvas.
-	catStartRow = 3
-	catStartCol = 7
+	catStartRow = 4
+	catStartCol = 9
 )
 
 func (m Model) View() string {
@@ -43,13 +44,46 @@ func (m Model) View() string {
 		MarginTop(1)
 
 	elapsed := time.Since(m.state.LastCommitAt)
-	moodBar := renderMoodBar(elapsed, m.mood, color)
+
+	// Compute progress value and label for mood bar.
+	var progressValue float64
+	var label string
+
+	switch m.mood {
+	case pet.MoodHappy:
+		progressValue = 1.0 - (float64(elapsed) / float64(24*time.Hour))
+		remaining := 24*time.Hour - elapsed
+		label = fmt.Sprintf("%s until hungry", pet.FormatDuration(remaining.Truncate(time.Minute)))
+	case pet.MoodHungry:
+		progressValue = 1.0 - (float64(elapsed-24*time.Hour) / float64(24*time.Hour))
+		remaining := 48*time.Hour - elapsed
+		label = fmt.Sprintf("%s until sad", pet.FormatDuration(remaining.Truncate(time.Minute)))
+	case pet.MoodSad:
+		progressValue = 1.0 - (float64(elapsed-48*time.Hour) / float64(24*time.Hour))
+		remaining := 72*time.Hour - elapsed
+		label = fmt.Sprintf("%s until asleep", pet.FormatDuration(remaining.Truncate(time.Minute)))
+	case pet.MoodAsleep:
+		progressValue = 0
+		label = "Pixel is asleep... commit to wake him up"
+	}
+
+	if progressValue < 0 {
+		progressValue = 0
+	}
+
+	// Use bubbles progress bar with mood-colored fill.
+	prog := progress.New(
+		progress.WithSolidFill(pet.ColorForMood(m.mood)),
+		progress.WithWidth(30),
+		progress.WithoutPercentage(),
+	)
+	moodBar := prog.ViewAs(progressValue) + " " + label
 
 	elapsedStr := pet.FormatDuration(elapsed.Truncate(time.Minute))
 
 	canvas := m.renderCanvas()
 
-	view := lipgloss.JoinVertical(
+	content := lipgloss.JoinVertical(
 		lipgloss.Center,
 		titleStyle.Render("🐱 Pixel"),
 		artStyle.Render(canvas),
@@ -60,7 +94,14 @@ func (m Model) View() string {
 		helpStyle.Render("q: quit"),
 	)
 
-	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, view)
+	borderStyle := lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		BorderForeground(color).
+		Padding(1, 3)
+
+	boxed := borderStyle.Render(content)
+
+	return lipgloss.Place(m.width, m.height, lipgloss.Center, lipgloss.Center, boxed)
 }
 
 // renderCanvas builds a character grid, places the cat art and particles,
@@ -156,48 +197,4 @@ func overrideEyes(art string) string {
 		}
 	}
 	return strings.Join(lines, "\n")
-}
-
-func renderMoodBar(elapsed time.Duration, mood pet.Mood, color lipgloss.Color) string {
-	var progress float64
-	var label string
-
-	switch mood {
-	case pet.MoodHappy:
-		progress = 1.0 - (float64(elapsed) / float64(24*time.Hour))
-		remaining := 24*time.Hour - elapsed
-		label = fmt.Sprintf("%s until hungry", pet.FormatDuration(remaining.Truncate(time.Minute)))
-	case pet.MoodHungry:
-		progress = 1.0 - (float64(elapsed-24*time.Hour) / float64(24*time.Hour))
-		remaining := 48*time.Hour - elapsed
-		label = fmt.Sprintf("%s until sad", pet.FormatDuration(remaining.Truncate(time.Minute)))
-	case pet.MoodSad:
-		progress = 1.0 - (float64(elapsed-48*time.Hour) / float64(24*time.Hour))
-		remaining := 72*time.Hour - elapsed
-		label = fmt.Sprintf("%s until asleep", pet.FormatDuration(remaining.Truncate(time.Minute)))
-	case pet.MoodAsleep:
-		progress = 0
-		label = "Pixel is asleep... commit to wake him up"
-	}
-
-	if progress < 0 {
-		progress = 0
-	}
-
-	barWidth := 20
-	filled := int(progress * float64(barWidth))
-	empty := barWidth - filled
-
-	filledStyle := lipgloss.NewStyle().Foreground(color)
-	emptyStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#333333"))
-
-	bar := ""
-	for i := 0; i < filled; i++ {
-		bar += filledStyle.Render("█")
-	}
-	for i := 0; i < empty; i++ {
-		bar += emptyStyle.Render("░")
-	}
-
-	return fmt.Sprintf("%s %s", bar, label)
 }

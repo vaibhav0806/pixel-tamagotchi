@@ -11,7 +11,7 @@ func Render(mood Mood) string {
 	paws := pawsFor(mood)
 	emoji := mood.Emoji()
 
-	return fmt.Sprintf("   %s\n /\\_/\\\n( %s )\n %s", emoji, face, paws)
+	return fmt.Sprintf("    %s\n  /\\_/\\\n ( %s )\n  %s\n /|   |\\\n(_|   |_)\n   \" \"", emoji, face, paws)
 }
 
 func faceFor(mood Mood) string {
@@ -35,31 +35,31 @@ func pawsFor(mood Mood) string {
 }
 
 // AnimationFrames returns all animation frames for a given mood.
-// Each frame is a complete 4-line cat art string.
+// Each frame is a complete 7-line cat art string.
 func AnimationFrames(mood Mood) []string {
 	emoji := mood.Emoji()
 	switch mood {
 	case MoodHappy:
 		return []string{
-			fmt.Sprintf("   %s\n /\\_/\\\n( o.o )\n > ^ <", emoji),
-			fmt.Sprintf("   %s\n /\\_/\\\n( ^.^ )\n > ^ <", emoji),
-			fmt.Sprintf("   %s\n /\\_/\\\n( o.o )\n /> </", emoji),
+			fmt.Sprintf("    %s\n  /\\_/\\\n ( o.o )\n  > ^ <\n /|   |\\\n(_|   |_)\n   \" \"", emoji),
+			fmt.Sprintf("    %s\n  /\\_/\\\n ( ^.^ )\n  > ^ <\n /|   |\\\n(_|   |_)\n   ~ ~", emoji),
+			fmt.Sprintf("    %s\n  /\\_/\\\n ( o.o )\n  /> </\n /|   |\\\n(_|   |_)\n   \" \"", emoji),
 		}
 	case MoodHungry:
 		return []string{
-			fmt.Sprintf("   %s\n /\\_/\\\n( o.o )\n > ~ <", emoji),
-			fmt.Sprintf("   %s\n /\\_/\\\n( o.o )\u3064\n > ~ <", emoji),
-			fmt.Sprintf("   %s\n /\\_/\\\n( >.< )\n > ~ <", emoji),
+			fmt.Sprintf("    %s\n  /\\_/\\\n ( o.o )\n  > ~ <\n /|   |\\\n(_|   |_)\n   \" \"", emoji),
+			fmt.Sprintf("    %s\n  /\\_/\\\n ( o.o )\u3064\n  > ~ <\n /|   |\\\n(_|   |_)\n   \" \"", emoji),
+			fmt.Sprintf("    %s\n  /\\_/\\\n ( >.< )\n  > ~ <\n /|   |\\\n(_|   |_)\n   \" \"", emoji),
 		}
 	case MoodSad:
 		return []string{
-			fmt.Sprintf("   %s\n /\\_/\\\n( T.T )\n > ~ <", emoji),
-			fmt.Sprintf("   %s\n /\\_/\\\n( ;_; )\n < ~ >", emoji),
+			fmt.Sprintf("    %s\n  /\\_/\\\n ( T.T )\n  > ~ <\n /|   |\\\n(_|   |_)\n   \" \"", emoji),
+			fmt.Sprintf("    %s\n  /\\_/\\\n ( ;_; )\n  < ~ >\n /|   |\\\n(_|   |_)\n   \" \"", emoji),
 		}
 	case MoodAsleep:
 		return []string{
-			fmt.Sprintf("   %s\n /\\_/\\\n( -.- )\n > ~ <", emoji),
-			fmt.Sprintf("   %s\n /\\_/\\\n( -.- )\n >   <", emoji),
+			fmt.Sprintf("    %s\n  /\\_/\\\n ( -.- )\n  > ~ <\n /|   |\\\n(_|   |_)\n   \" \"", emoji),
+			fmt.Sprintf("    %s\n  /\\_/\\\n ( -.- )\n  >   <\n /|   |\\\n( _| |_ )\n   \" \"", emoji),
 		}
 	default:
 		return []string{Render(mood)}
@@ -117,7 +117,7 @@ func RenderWithBlink(mood Mood, blinkOpen bool) string {
 	paws := pawsFor(mood)
 	emoji := mood.Emoji()
 
-	return fmt.Sprintf("   %s\n /\\_/\\\n( %s )\n %s", emoji, face, paws)
+	return fmt.Sprintf("    %s\n  /\\_/\\\n ( %s )\n  %s\n /|   |\\\n(_|   |_)\n   \" \"", emoji, face, paws)
 }
 
 func RandomMessage(mood Mood) string {
