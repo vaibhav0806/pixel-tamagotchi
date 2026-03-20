@@ -12,6 +12,12 @@ A tamagotchi cat that lives in your terminal. Meet **Pixel** — she tracks your
 
 ## Install
 
+**npm (easiest — works everywhere):**
+
+```bash
+npm install -g pixel-tamagotchi
+```
+
 **Homebrew (macOS/Linux):**
 
 ```bash

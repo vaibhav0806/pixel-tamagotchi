@@ -1,0 +1,28 @@
+{
+  "name": "pixel-tamagotchi",
+  "version": "0.1.0",
+  "description": "A tamagotchi cat that lives in your terminal",
+  "bin": {
+    "pixel-tamagotchi": "bin/pixel-tamagotchi"
+  },
+  "scripts": {
+    "postinstall": "node install.js"
+  },
+  "keywords": [
+    "tamagotchi",
+    "terminal",
+    "pet",
+    "cat",
+    "cli",
+    "pixel",
+    "ascii-art",
+    "tui"
+  ],
+  "author": "vaibhav0806",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vaibhav0806/pixel-tamagotchi.git"
+  },
+  "homepage": "https://github.com/vaibhav0806/pixel-tamagotchi"
+}
