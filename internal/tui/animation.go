@@ -32,7 +32,7 @@ type ParticleSystem struct {
 var moodParticles = map[pet.Mood][]string{
 	pet.MoodHappy:  {"♡", "✦", "♪", "·"},
 	pet.MoodHungry: {"·", "?"},
-	pet.MoodSad:    {"💧", "·"},
+	pet.MoodSad:    {"·", ",", "'", "."},
 	pet.MoodAsleep: {"z", "Z", "·"},
 }
 
