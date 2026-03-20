@@ -1,4 +1,4 @@
-# terminal-pet
+# pixel-tamagotchi
 
 A tamagotchi cat that lives in your terminal. Meet **Pixel** — she tracks your git commits and gets hungry if you haven't coded in a while.
 
