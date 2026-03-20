@@ -3,6 +3,7 @@ package pet
 import (
 	"fmt"
 	"math/rand"
+	"time"
 )
 
 func Render(mood Mood) string {
@@ -69,4 +70,32 @@ func RandomMessage(mood Mood) string {
 		return ""
 	}
 	return pool[rand.Intn(len(pool))]
+}
+
+func ColorForMood(mood Mood) string {
+	switch mood {
+	case MoodHappy:
+		return "#4ade80"
+	case MoodHungry:
+		return "#facc15"
+	case MoodSad:
+		return "#60a5fa"
+	case MoodAsleep:
+		return "#94a3b8"
+	default:
+		return "#e0e0e0"
+	}
+}
+
+func FormatDuration(d time.Duration) string {
+	if d < 0 {
+		d = 0
+	}
+	if d < time.Hour {
+		return fmt.Sprintf("%dm", int(d.Minutes()))
+	}
+	if d < 24*time.Hour {
+		return fmt.Sprintf("%dh", int(d.Hours()))
+	}
+	return fmt.Sprintf("%dd", int(d.Hours()/24))
 }

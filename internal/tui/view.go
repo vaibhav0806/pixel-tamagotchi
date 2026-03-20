@@ -9,7 +9,7 @@ import (
 )
 
 func (m Model) View() string {
-	color := colorForMood(m.mood)
+	color := lipgloss.Color(pet.ColorForMood(m.mood))
 
 	titleStyle := lipgloss.NewStyle().
 		Foreground(color).
@@ -35,7 +35,7 @@ func (m Model) View() string {
 	elapsed := time.Since(m.state.LastCommitAt)
 	moodBar := renderMoodBar(elapsed, m.mood, color)
 
-	elapsedStr := formatDuration(elapsed.Truncate(time.Minute))
+	elapsedStr := pet.FormatDuration(elapsed.Truncate(time.Minute))
 
 	art := pet.RenderWithBlink(m.mood, m.blinkOpen)
 
@@ -61,15 +61,15 @@ func renderMoodBar(elapsed time.Duration, mood pet.Mood, color lipgloss.Color) s
 	case pet.MoodHappy:
 		progress = 1.0 - (float64(elapsed) / float64(24*time.Hour))
 		remaining := 24*time.Hour - elapsed
-		label = fmt.Sprintf("%s until hungry", formatDuration(remaining.Truncate(time.Minute)))
+		label = fmt.Sprintf("%s until hungry", pet.FormatDuration(remaining.Truncate(time.Minute)))
 	case pet.MoodHungry:
 		progress = 1.0 - (float64(elapsed-24*time.Hour) / float64(24*time.Hour))
 		remaining := 48*time.Hour - elapsed
-		label = fmt.Sprintf("%s until sad", formatDuration(remaining.Truncate(time.Minute)))
+		label = fmt.Sprintf("%s until sad", pet.FormatDuration(remaining.Truncate(time.Minute)))
 	case pet.MoodSad:
 		progress = 1.0 - (float64(elapsed-48*time.Hour) / float64(24*time.Hour))
 		remaining := 72*time.Hour - elapsed
-		label = fmt.Sprintf("%s until asleep", formatDuration(remaining.Truncate(time.Minute)))
+		label = fmt.Sprintf("%s until asleep", pet.FormatDuration(remaining.Truncate(time.Minute)))
 	case pet.MoodAsleep:
 		progress = 0
 		label = "Pixel is asleep... commit to wake him up"
@@ -95,32 +95,4 @@ func renderMoodBar(elapsed time.Duration, mood pet.Mood, color lipgloss.Color) s
 	}
 
 	return fmt.Sprintf("%s %s", bar, label)
-}
-
-func colorForMood(mood pet.Mood) lipgloss.Color {
-	switch mood {
-	case pet.MoodHappy:
-		return lipgloss.Color("#4ade80")
-	case pet.MoodHungry:
-		return lipgloss.Color("#facc15")
-	case pet.MoodSad:
-		return lipgloss.Color("#60a5fa")
-	case pet.MoodAsleep:
-		return lipgloss.Color("#94a3b8")
-	default:
-		return lipgloss.Color("#e0e0e0")
-	}
-}
-
-func formatDuration(d time.Duration) string {
-	if d < 0 {
-		d = 0
-	}
-	if d < time.Hour {
-		return fmt.Sprintf("%dm", int(d.Minutes()))
-	}
-	if d < 24*time.Hour {
-		return fmt.Sprintf("%dh", int(d.Hours()))
-	}
-	return fmt.Sprintf("%dd", int(d.Hours()/24))
 }
