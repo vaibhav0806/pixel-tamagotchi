@@ -59,18 +59,20 @@ func runInit(cmd *cobra.Command, args []string) error {
 	}
 
 	// Check existing hooks path
+	hooksDir := filepath.Join(baseDir, "hooks")
 	existingPath := ""
 	out, err := exec.Command("git", "config", "--global", "core.hooksPath").Output()
 	if err == nil {
 		existingPath = strings.TrimSpace(string(out))
+		// Don't chain to our own hooks dir (happens on re-init)
+		if existingPath == hooksDir {
+			existingPath = ""
+		}
 		if existingPath != "" {
 			fmt.Printf("Found existing global hooks path: %s\n", existingPath)
 			fmt.Println("Pixel will chain to your existing hooks.")
 		}
 	}
-
-	// Install hook
-	hooksDir := filepath.Join(baseDir, "hooks")
 	if err := hook.Install(hooksDir, existingPath); err != nil {
 		return fmt.Errorf("install hook: %w", err)
 	}
