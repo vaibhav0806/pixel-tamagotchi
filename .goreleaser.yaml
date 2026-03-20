@@ -6,6 +6,8 @@ builds:
   - binary: pixel-tamagotchi
     env:
       - CGO_ENABLED=0
+    ldflags:
+      - -s -w -X github.com/vaibhav0806/pixel-tamagotchi/cmd.Version={{.Version}}
     goos:
       - linux
       - darwin

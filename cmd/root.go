@@ -11,11 +11,25 @@ import (
 	"github.com/vaibhav0806/pixel-tamagotchi/internal/pet"
 )
 
+// Version is set at build time via ldflags.
+var Version = "dev"
+
 var rootCmd = &cobra.Command{
 	Use:     "pixel",
 	Aliases: []string{"pixel-tamagotchi"},
 	Short:   "A tamagotchi cat that lives in your terminal",
-	RunE:  runStatus,
+	Long: `pixel-tamagotchi — a tamagotchi cat that lives in your terminal.
+
+Meet Pixel! She tracks your git commits and reflects your coding
+activity as her mood. Commit regularly to keep her happy.
+
+  pixel           Check on Pixel
+  pixel init      Set up Pixel and install git hook
+  pixel watch     Open the animated dashboard
+  pixel reset     Wake Pixel up and reset streak
+  pixel uninstall Remove hooks and clean up`,
+	Version: Version,
+	RunE:    runStatus,
 }
 
 func Execute() {
