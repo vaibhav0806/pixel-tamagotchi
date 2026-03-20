@@ -2,13 +2,15 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
-	"github.com/vaibhav/terminal-pet/internal/config"
 	"github.com/vaibhav/terminal-pet/internal/pet"
 	"github.com/vaibhav/terminal-pet/internal/tui"
 )
+
+var moodFlag string
 
 var watchCmd = &cobra.Command{
 	Use:   "watch",
@@ -17,14 +19,25 @@ var watchCmd = &cobra.Command{
 }
 
 func init() {
+	watchCmd.Flags().StringVar(&moodFlag, "mood", "", "Override mood for testing (happy, hungry, sad, asleep)")
 	rootCmd.AddCommand(watchCmd)
 }
 
 func runWatch(cmd *cobra.Command, args []string) error {
-	statePath := config.DefaultStatePath()
-	if _, err := pet.LoadState(statePath); err != nil {
-		fmt.Println("Pixel isn't here yet! Run 'terminal-pet init' first.")
-		return nil
+	if moodFlag != "" {
+		switch strings.ToLower(moodFlag) {
+		case "happy":
+			tui.MoodOverride = pet.MoodHappy
+		case "hungry":
+			tui.MoodOverride = pet.MoodHungry
+		case "sad":
+			tui.MoodOverride = pet.MoodSad
+		case "asleep":
+			tui.MoodOverride = pet.MoodAsleep
+		default:
+			fmt.Printf("Unknown mood %q. Use: happy, hungry, sad, asleep\n", moodFlag)
+			return nil
+		}
 	}
 
 	m := tui.NewModel()

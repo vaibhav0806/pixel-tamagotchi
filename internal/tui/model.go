@@ -27,6 +27,9 @@ type Model struct {
 	particles ParticleSystem
 }
 
+// MoodOverride, when >= 0, locks the mood to a specific value (for dev testing).
+var MoodOverride pet.Mood = -1
+
 func NewModel() Model {
 	statePath := config.DefaultStatePath()
 	state, err := pet.LoadState(statePath)
@@ -38,6 +41,9 @@ func NewModel() Model {
 	}
 
 	mood := pet.ComputeMood(state.LastCommitAt)
+	if MoodOverride >= 0 {
+		mood = MoodOverride
+	}
 
 	return Model{
 		state:     state,
@@ -72,23 +78,27 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.height = msg.Height
 
 	case tickMsg:
-		newMood := pet.ComputeMood(m.state.LastCommitAt)
-		if newMood != m.mood {
-			m.mood = newMood
-			m.particles.SetMood(m.mood)
-			m.frame = 0
+		if MoodOverride < 0 {
+			newMood := pet.ComputeMood(m.state.LastCommitAt)
+			if newMood != m.mood {
+				m.mood = newMood
+				m.particles.SetMood(m.mood)
+				m.frame = 0
+			}
 		}
 		return m, tickEvery(time.Second)
 
 	case stateRefreshMsg:
 		if msg.state != nil {
-			oldMood := m.mood
 			m.state = msg.state
-			m.mood = pet.ComputeMood(m.state.LastCommitAt)
-			if m.mood != oldMood {
-				m.message = pet.RandomMessage(m.mood)
-				m.particles.SetMood(m.mood)
-				m.frame = 0
+			if MoodOverride < 0 {
+				oldMood := m.mood
+				m.mood = pet.ComputeMood(m.state.LastCommitAt)
+				if m.mood != oldMood {
+					m.message = pet.RandomMessage(m.mood)
+					m.particles.SetMood(m.mood)
+					m.frame = 0
+				}
 			}
 		}
 		return m, refreshStateAfter(m.statePath, 3*time.Second)
