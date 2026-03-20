@@ -2,13 +2,7 @@
 
 A tamagotchi cat that lives in your terminal. Meet **Pixel** — she tracks your git commits and gets hungry if you haven't coded in a while.
 
-```
-      💖
-  /\_/\  ~
-=( ^.^ )=
- /     \
-( u   u )
-```
+![pixel-tamagotchi demo](demo.gif)
 
 ## Install
 
@@ -83,7 +77,7 @@ No permadeath. Pixel always comes back.
 
 | Command | Description |
 |---------|-------------|
-| `pixel` | Quick status check |
+| `pixel` / `pixel status` | Quick status check |
 | `pixel init` | Set up Pixel and install git hook |
 | `pixel watch` | Animated TUI dashboard (bell on mood changes) |
 | `pixel stats` | Lifetime stats — commits, streaks, days together |
