@@ -13,10 +13,9 @@ import (
 
 const (
 	canvasWidth  = 30
-	canvasHeight = 15
-	// Cat art is placed starting at this row/col in the canvas.
-	catStartRow = 4
-	catStartCol = 9
+	canvasHeight = 11
+	catStartRow  = 1
+	catStartCol  = 9
 )
 
 func (m Model) View() string {
@@ -24,24 +23,20 @@ func (m Model) View() string {
 
 	titleStyle := lipgloss.NewStyle().
 		Foreground(color).
-		Bold(true).
-		MarginBottom(1)
+		Bold(true)
 
 	artStyle := lipgloss.NewStyle().
 		Foreground(color)
 
 	messageStyle := lipgloss.NewStyle().
 		Foreground(color).
-		Italic(true).
-		MarginTop(1)
+		Italic(true)
 
 	statsStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#888888")).
-		MarginTop(1)
+		Foreground(lipgloss.Color("#888888"))
 
-	helpStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#555555")).
-		MarginTop(1)
+	dimStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.Color("#555555"))
 
 	elapsed := time.Since(m.state.LastCommitAt)
 
@@ -71,7 +66,6 @@ func (m Model) View() string {
 		progressValue = 0
 	}
 
-	// Use bubbles progress bar with mood-colored fill.
 	prog := progress.New(
 		progress.WithSolidFill(pet.ColorForMood(m.mood)),
 		progress.WithWidth(30),
@@ -83,15 +77,21 @@ func (m Model) View() string {
 
 	canvas := m.renderCanvas()
 
+	// Compact stats line
+	statsLine := fmt.Sprintf("%s  %s  |  Streak: %d 🔥  |  Last commit: %s ago",
+		m.mood.Emoji(), m.mood.String(), m.state.CurrentStreak, elapsedStr)
+
 	content := lipgloss.JoinVertical(
 		lipgloss.Center,
 		titleStyle.Render("🐱 Pixel"),
+		"",
 		artStyle.Render(canvas),
 		messageStyle.Render(fmt.Sprintf("%q", m.message)),
-		statsStyle.Render(fmt.Sprintf("Mood: %s  |  Streak: %d 🔥", m.mood.String(), m.state.CurrentStreak)),
-		statsStyle.Render(fmt.Sprintf("Last commit: %s ago", elapsedStr)),
+		"",
+		statsStyle.Render(statsLine),
 		moodBar,
-		helpStyle.Render("q: quit"),
+		"",
+		dimStyle.Render("q: quit"),
 	)
 
 	borderStyle := lipgloss.NewStyle().
@@ -116,6 +116,12 @@ func (m Model) renderCanvas() string {
 		}
 	}
 
+	// Track which cells belong to the cat (including internal spaces).
+	catZone := make([][]bool, canvasHeight)
+	for y := 0; y < canvasHeight; y++ {
+		catZone[y] = make([]bool, canvasWidth)
+	}
+
 	// Get the current cat frame.
 	var catArt string
 	if m.earTwitch {
@@ -131,7 +137,7 @@ func (m Model) renderCanvas() string {
 		catArt = overrideEyes(catArt)
 	}
 
-	// Place cat art on the grid.
+	// Place cat art on the grid and mark the cat zone.
 	catLines := strings.Split(catArt, "\n")
 	for dy, line := range catLines {
 		row := catStartRow + dy
@@ -139,21 +145,34 @@ func (m Model) renderCanvas() string {
 			break
 		}
 		col := catStartCol
+		lineStart := -1
+		lineEnd := -1
 		for _, r := range line {
 			if col >= canvasWidth {
 				break
 			}
 			grid[row][col] = string(r)
+			if r != ' ' {
+				if lineStart == -1 {
+					lineStart = col
+				}
+				lineEnd = col
+			}
 			col++
+		}
+		// Mark the entire span from first non-space to last non-space as cat zone.
+		// This prevents particles from landing inside the cat body.
+		if lineStart >= 0 && lineEnd >= 0 {
+			for x := lineStart; x <= lineEnd; x++ {
+				catZone[row][x] = true
+			}
 		}
 	}
 
-	// Place particles on the grid (particles behind cat art stay hidden
-	// because we place particles after, but only on empty spaces).
+	// Place particles on the grid, but only outside the cat zone.
 	for _, p := range m.particles.particles {
 		if p.x >= 0 && p.x < canvasWidth && p.y >= 0 && p.y < canvasHeight {
-			// Only place particle if the cell is a space (don't overwrite cat).
-			if grid[p.y][p.x] == " " {
+			if !catZone[p.y][p.x] {
 				grid[p.y][p.x] = p.char
 			}
 		}
@@ -176,15 +195,12 @@ func (m Model) renderCanvas() string {
 func overrideEyes(art string) string {
 	lines := strings.Split(art, "\n")
 	for i, line := range lines {
-		// The face line contains "( ... )" pattern.
 		if strings.Contains(line, "(") && strings.Contains(line, ")") {
 			openParen := strings.Index(line, "(")
 			closeParen := strings.LastIndex(line, ")")
 			if closeParen > openParen {
-				// Count runes between parens to maintain width.
 				inner := line[openParen+1 : closeParen]
 				runeCount := utf8.RuneCountInString(inner)
-				// Build replacement: space + -.- + spaces to fill.
 				var face string
 				if runeCount >= 5 {
 					padding := runeCount - 5
