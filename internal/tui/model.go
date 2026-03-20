@@ -19,6 +19,12 @@ type Model struct {
 	blinkOpen bool
 	width     int
 	height    int
+
+	// Animation state.
+	frame     int
+	animTick  int
+	earTwitch bool
+	particles ParticleSystem
 }
 
 func NewModel() Model {
@@ -39,6 +45,7 @@ func NewModel() Model {
 		mood:      mood,
 		message:   pet.RandomMessage(mood),
 		blinkOpen: true,
+		particles: NewParticleSystem(mood),
 	}
 }
 
@@ -48,6 +55,8 @@ func (m Model) Init() tea.Cmd {
 		refreshState(m.statePath),
 		blinkCmd(),
 		messageRotateCmd(),
+		animTickCmd(),
+		frameAdvanceCmd(),
 	)
 }
 
@@ -63,7 +72,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		m.height = msg.Height
 
 	case tickMsg:
-		m.mood = pet.ComputeMood(m.state.LastCommitAt)
+		newMood := pet.ComputeMood(m.state.LastCommitAt)
+		if newMood != m.mood {
+			m.mood = newMood
+			m.particles.SetMood(m.mood)
+			m.frame = 0
+		}
 		return m, tickEvery(time.Second)
 
 	case stateRefreshMsg:
@@ -73,6 +87,8 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.mood = pet.ComputeMood(m.state.LastCommitAt)
 			if m.mood != oldMood {
 				m.message = pet.RandomMessage(m.mood)
+				m.particles.SetMood(m.mood)
+				m.frame = 0
 			}
 		}
 		return m, refreshStateAfter(m.statePath, 3*time.Second)
@@ -82,6 +98,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case messageRotateMsg:
 		return m, handleMessageRotate(&m)
+
+	case animTickMsg:
+		return m, handleAnimTick(&m)
+
+	case frameAdvanceMsg:
+		return m, handleFrameAdvance(&m)
 	}
 
 	return m, nil

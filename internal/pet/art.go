@@ -34,6 +34,62 @@ func pawsFor(mood Mood) string {
 	return "> ~ <"
 }
 
+// AnimationFrames returns all animation frames for a given mood.
+// Each frame is a complete 4-line cat art string.
+func AnimationFrames(mood Mood) []string {
+	emoji := mood.Emoji()
+	switch mood {
+	case MoodHappy:
+		return []string{
+			fmt.Sprintf("   %s\n /\\_/\\\n( o.o )\n > ^ <", emoji),
+			fmt.Sprintf("   %s\n /\\_/\\\n( ^.^ )\n > ^ <", emoji),
+			fmt.Sprintf("   %s\n /\\_/\\\n( o.o )\n /> </", emoji),
+		}
+	case MoodHungry:
+		return []string{
+			fmt.Sprintf("   %s\n /\\_/\\\n( o.o )\n > ~ <", emoji),
+			fmt.Sprintf("   %s\n /\\_/\\\n( o.o )\u3064\n > ~ <", emoji),
+			fmt.Sprintf("   %s\n /\\_/\\\n( >.< )\n > ~ <", emoji),
+		}
+	case MoodSad:
+		return []string{
+			fmt.Sprintf("   %s\n /\\_/\\\n( T.T )\n > ~ <", emoji),
+			fmt.Sprintf("   %s\n /\\_/\\\n( ;_; )\n < ~ >", emoji),
+		}
+	case MoodAsleep:
+		return []string{
+			fmt.Sprintf("   %s\n /\\_/\\\n( -.- )\n > ~ <", emoji),
+			fmt.Sprintf("   %s\n /\\_/\\\n( -.- )\n >   <", emoji),
+		}
+	default:
+		return []string{Render(mood)}
+	}
+}
+
+// EarTwitchFrame returns a frame with a twitched ear for variety.
+func EarTwitchFrame(mood Mood, frameIdx int) string {
+	frames := AnimationFrames(mood)
+	if frameIdx >= len(frames) {
+		frameIdx = 0
+	}
+	frame := frames[frameIdx]
+	// Replace normal ears with twitched ears
+	return replaceFirst(frame, `/\_/\`, `/\~/\`)
+}
+
+func replaceFirst(s, old, new string) string {
+	i := 0
+	for j := 0; j < len(s)-len(old)+1; j++ {
+		if s[j:j+len(old)] == old {
+			if i == 0 {
+				return s[:j] + new + s[j+len(old):]
+			}
+			i++
+		}
+	}
+	return s
+}
+
 var messages = map[Mood][]string{
 	MoodHappy: {
 		"Pixel is purring!",
