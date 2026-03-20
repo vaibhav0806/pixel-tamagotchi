@@ -28,7 +28,7 @@ func init() {
 func runInit(cmd *cobra.Command, args []string) error {
 	statePath := config.DefaultStatePath()
 	if _, err := os.Stat(statePath); err == nil {
-		fmt.Println("Pixel is already here! If you want to start fresh, run 'pixel-tamagotchi uninstall' first.")
+		fmt.Println("Pixel is already here! If you want to start fresh, run 'pixel uninstall' first.")
 		return nil
 	}
 
@@ -92,6 +92,7 @@ func runInit(cmd *cobra.Command, args []string) error {
 	}
 
 	// Try to find most recent commit across scan dirs
+	fmt.Println("Scanning for recent commits...")
 	for _, dir := range scanDirs {
 		expanded := expandHome(dir)
 		latestCommit := findLatestCommit(expanded)
@@ -112,8 +113,8 @@ func runInit(cmd *cobra.Command, args []string) error {
 	fmt.Println()
 	fmt.Println(pet.Render(pet.ComputeMood(state.LastCommitAt)))
 	fmt.Println()
-	fmt.Println("Pixel has arrived! He'll track your commits automatically.")
-	fmt.Println("Run 'pixel' anytime to check on him.")
+	fmt.Println("Pixel has arrived! She'll track your commits automatically.")
+	fmt.Println("Run 'pixel' anytime to check on her.")
 
 	return nil
 }

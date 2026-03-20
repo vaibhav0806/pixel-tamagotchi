@@ -2,10 +2,12 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
+	"github.com/vaibhav0806/pixel-tamagotchi/internal/config"
 	"github.com/vaibhav0806/pixel-tamagotchi/internal/pet"
 	"github.com/vaibhav0806/pixel-tamagotchi/internal/tui"
 )
@@ -24,6 +26,12 @@ func init() {
 }
 
 func runWatch(cmd *cobra.Command, args []string) error {
+	statePath := config.DefaultStatePath()
+	if _, err := os.Stat(statePath); os.IsNotExist(err) {
+		fmt.Println("Pixel isn't here yet! Run 'pixel init' first.")
+		return nil
+	}
+
 	if moodFlag != "" {
 		switch strings.ToLower(moodFlag) {
 		case "happy":

@@ -93,25 +93,13 @@ var messages = map[Mood][]string{
 		"Pixel is listening to lo-fi beats and crying",
 	},
 	MoodAsleep: {
-		"Pixel is curled up sleeping... commit to wake him up",
+		"Pixel is curled up sleeping... commit to wake her up",
 		"Pixel is dreaming about merge conflicts",
 		"Pixel is hibernating in /dev/null",
 		"Pixel's contribution graph has flatlined",
 		"Pixel.exe has stopped responding",
 		"Pixel went to sleep mode to save energy",
 	},
-}
-
-func RenderWithBlink(mood Mood, blinkOpen bool) string {
-	frame := Render(mood)
-	if !blinkOpen {
-		frame = strings.Replace(frame, "o.o", "-.-", 1)
-		frame = strings.Replace(frame, "^.^", "-.-", 1)
-		frame = strings.Replace(frame, "T.T", "-.-", 1)
-		frame = strings.Replace(frame, ";_;", "-.-", 1)
-		frame = strings.Replace(frame, ">.<", "-.-", 1)
-	}
-	return frame
 }
 
 func RandomMessage(mood Mood) string {
@@ -140,6 +128,9 @@ func ColorForMood(mood Mood) string {
 func FormatDuration(d time.Duration) string {
 	if d < 0 {
 		d = 0
+	}
+	if d < time.Minute {
+		return "just now"
 	}
 	if d < time.Hour {
 		return fmt.Sprintf("%dm", int(d.Minutes()))

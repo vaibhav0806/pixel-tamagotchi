@@ -43,7 +43,9 @@ func runStatus(cmd *cobra.Command, args []string) error {
 
 	state, err := pet.LoadState(statePath)
 	if err != nil {
-		fmt.Println("Pixel isn't here yet! Run 'pixel init' to adopt him.")
+		fmt.Println(pet.Render(pet.MoodAsleep))
+		fmt.Println()
+		fmt.Println("Pixel isn't here yet! Run 'pixel init' to adopt her.")
 		return nil
 	}
 

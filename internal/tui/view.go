@@ -58,7 +58,7 @@ func (m Model) View() string {
 		label = fmt.Sprintf("%s until asleep", pet.FormatDuration(remaining.Truncate(time.Minute)))
 	case pet.MoodAsleep:
 		progressValue = 0
-		label = "Pixel is asleep... commit to wake him up"
+		label = "Pixel is asleep... commit to wake her up"
 	}
 
 	if progressValue < 0 {
