@@ -29,11 +29,11 @@ func Install(hooksDir string, existingHooksPath string) error {
 
 func GenerateHookScript() string {
 	return `#!/bin/sh
-# terminal-pet post-commit hook
-terminal-pet update-state 2>/dev/null &
+# pixel-tamagotchi post-commit hook
+pixel-tamagotchi update-state 2>/dev/null &
 
 # Chain existing hooks if present
-ORIGINAL_HOOKS="$HOME/.terminal-pet/original-hooks-path"
+ORIGINAL_HOOKS="$HOME/.pixel-tamagotchi/original-hooks-path"
 if [ -f "$ORIGINAL_HOOKS" ]; then
     ORIG=$(cat "$ORIGINAL_HOOKS")
     if [ -x "$ORIG/post-commit" ]; then

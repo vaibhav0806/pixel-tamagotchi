@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/vaibhav/terminal-pet/internal/pet"
+	"github.com/vaibhav0806/pixel-tamagotchi/internal/pet"
 )
 
 func TestRenderContainsFace(t *testing.T) {

@@ -9,8 +9,8 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/vaibhav/terminal-pet/internal/config"
-	"github.com/vaibhav/terminal-pet/internal/hook"
+	"github.com/vaibhav0806/pixel-tamagotchi/internal/config"
+	"github.com/vaibhav0806/pixel-tamagotchi/internal/hook"
 )
 
 var uninstallCmd = &cobra.Command{

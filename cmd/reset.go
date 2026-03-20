@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/vaibhav/terminal-pet/internal/config"
-	"github.com/vaibhav/terminal-pet/internal/pet"
+	"github.com/vaibhav0806/pixel-tamagotchi/internal/config"
+	"github.com/vaibhav0806/pixel-tamagotchi/internal/pet"
 )
 
 var resetCmd = &cobra.Command{
@@ -24,7 +24,7 @@ func runReset(cmd *cobra.Command, args []string) error {
 
 	state, err := pet.LoadState(statePath)
 	if err != nil {
-		fmt.Println("Pixel isn't here yet! Run 'terminal-pet init' first.")
+		fmt.Println("Pixel isn't here yet! Run 'pixel-tamagotchi init' first.")
 		return nil
 	}
 

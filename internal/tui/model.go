@@ -4,8 +4,8 @@ import (
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/vaibhav/terminal-pet/internal/config"
-	"github.com/vaibhav/terminal-pet/internal/pet"
+	"github.com/vaibhav0806/pixel-tamagotchi/internal/config"
+	"github.com/vaibhav0806/pixel-tamagotchi/internal/pet"
 )
 
 type tickMsg time.Time

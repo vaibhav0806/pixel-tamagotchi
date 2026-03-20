@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/vaibhav/terminal-pet/internal/config"
+	"github.com/vaibhav0806/pixel-tamagotchi/internal/config"
 )
 
 func TestSaveAndLoadConfig(t *testing.T) {

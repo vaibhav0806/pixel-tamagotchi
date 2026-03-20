@@ -10,9 +10,9 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/vaibhav/terminal-pet/internal/config"
-	"github.com/vaibhav/terminal-pet/internal/hook"
-	"github.com/vaibhav/terminal-pet/internal/pet"
+	"github.com/vaibhav0806/pixel-tamagotchi/internal/config"
+	"github.com/vaibhav0806/pixel-tamagotchi/internal/hook"
+	"github.com/vaibhav0806/pixel-tamagotchi/internal/pet"
 )
 
 var initCmd = &cobra.Command{
@@ -28,7 +28,7 @@ func init() {
 func runInit(cmd *cobra.Command, args []string) error {
 	statePath := config.DefaultStatePath()
 	if _, err := os.Stat(statePath); err == nil {
-		fmt.Println("Pixel is already here! If you want to start fresh, run 'terminal-pet uninstall' first.")
+		fmt.Println("Pixel is already here! If you want to start fresh, run 'pixel-tamagotchi uninstall' first.")
 		return nil
 	}
 
@@ -111,7 +111,7 @@ func runInit(cmd *cobra.Command, args []string) error {
 	fmt.Println(pet.Render(pet.ComputeMood(state.LastCommitAt)))
 	fmt.Println()
 	fmt.Println("Pixel has arrived! He'll track your commits automatically.")
-	fmt.Println("Run 'terminal-pet' anytime to check on him.")
+	fmt.Println("Run 'pixel-tamagotchi' anytime to check on him.")
 
 	return nil
 }

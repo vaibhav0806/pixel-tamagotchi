@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/vaibhav/terminal-pet/internal/hook"
+	"github.com/vaibhav0806/pixel-tamagotchi/internal/hook"
 )
 
 func TestInstallHook_CreatesPostCommit(t *testing.T) {

@@ -1,6 +1,6 @@
 package main
 
-import "github.com/vaibhav/terminal-pet/cmd"
+import "github.com/vaibhav0806/pixel-tamagotchi/cmd"
 
 func main() {
 	cmd.Execute()

@@ -12,22 +12,34 @@ A tamagotchi cat that lives in your terminal. Meet **Pixel** — she tracks your
 
 ## Install
 
-```bash
-go install github.com/vaibhav/terminal-pet@latest
-```
-
-Or build from source:
+**Homebrew (macOS/Linux):**
 
 ```bash
-git clone https://github.com/vaibhav/terminal-pet.git
-cd terminal-pet
-go build -o terminal-pet .
+brew install vaibhav0806/tap/pixel-tamagotchi
 ```
+
+**Go:**
+
+```bash
+go install github.com/vaibhav0806/pixel-tamagotchi@latest
+```
+
+**From source:**
+
+```bash
+git clone https://github.com/vaibhav0806/pixel-tamagotchi.git
+cd pixel-tamagotchi
+go build -o pixel-tamagotchi .
+```
+
+**Binary download:**
+
+Grab the latest release from [GitHub Releases](https://github.com/vaibhav0806/pixel-tamagotchi/releases).
 
 ## Setup
 
 ```bash
-terminal-pet init
+pixel-tamagotchi init
 ```
 
 This sets up a global git post-commit hook so Pixel knows every time you commit, in any repo. If you already have a global `core.hooksPath`, it chains to your existing hooks.
@@ -37,13 +49,13 @@ This sets up a global git post-commit hook so Pixel knows every time you commit,
 **Check on Pixel:**
 
 ```bash
-terminal-pet
+pixel-tamagotchi
 ```
 
 **Open the animated dashboard:**
 
 ```bash
-terminal-pet watch
+pixel-tamagotchi watch
 ```
 
 The dashboard shows Pixel with live animations, floating particles, a mood bar, commit streak, and rotating status messages. Press `q` to quit.
@@ -65,21 +77,21 @@ No permadeath. Pixel always comes back.
 
 | Command | Description |
 |---------|-------------|
-| `terminal-pet` | Quick status check |
-| `terminal-pet init` | Set up Pixel and install git hook |
-| `terminal-pet watch` | Animated TUI dashboard |
-| `terminal-pet reset` | Wake Pixel up, reset streak |
-| `terminal-pet uninstall` | Remove hooks and clean up |
+| `pixel-tamagotchi` | Quick status check |
+| `pixel-tamagotchi init` | Set up Pixel and install git hook |
+| `pixel-tamagotchi watch` | Animated TUI dashboard |
+| `pixel-tamagotchi reset` | Wake Pixel up, reset streak |
+| `pixel-tamagotchi uninstall` | Remove hooks and clean up |
 
 ## Dev
 
 Test different moods without waiting:
 
 ```bash
-terminal-pet watch --mood happy
-terminal-pet watch --mood hungry
-terminal-pet watch --mood sad
-terminal-pet watch --mood asleep
+pixel-tamagotchi watch --mood happy
+pixel-tamagotchi watch --mood hungry
+pixel-tamagotchi watch --mood sad
+pixel-tamagotchi watch --mood asleep
 ```
 
 ## Built with

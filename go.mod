@@ -1,4 +1,4 @@
-module github.com/vaibhav/terminal-pet
+module github.com/vaibhav0806/pixel-tamagotchi
 
 go 1.25.6
 

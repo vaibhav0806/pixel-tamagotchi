@@ -7,7 +7,7 @@ import (
 
 	"github.com/charmbracelet/bubbles/progress"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/vaibhav/terminal-pet/internal/pet"
+	"github.com/vaibhav0806/pixel-tamagotchi/internal/pet"
 )
 
 const (

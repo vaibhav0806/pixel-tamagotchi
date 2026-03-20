@@ -7,12 +7,12 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
-	"github.com/vaibhav/terminal-pet/internal/config"
-	"github.com/vaibhav/terminal-pet/internal/pet"
+	"github.com/vaibhav0806/pixel-tamagotchi/internal/config"
+	"github.com/vaibhav0806/pixel-tamagotchi/internal/pet"
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "terminal-pet",
+	Use:   "pixel-tamagotchi",
 	Short: "A tamagotchi cat that lives in your terminal",
 	RunE:  runStatus,
 }
@@ -28,7 +28,7 @@ func runStatus(cmd *cobra.Command, args []string) error {
 
 	state, err := pet.LoadState(statePath)
 	if err != nil {
-		fmt.Println("Pixel isn't here yet! Run 'terminal-pet init' to adopt him.")
+		fmt.Println("Pixel isn't here yet! Run 'pixel-tamagotchi init' to adopt him.")
 		return nil
 	}
 

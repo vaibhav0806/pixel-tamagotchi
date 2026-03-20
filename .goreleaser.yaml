@@ -1,0 +1,42 @@
+version: 2
+
+project_name: pixel-tamagotchi
+
+builds:
+  - binary: pixel-tamagotchi
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+
+archives:
+  - format: tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}"
+    format_overrides:
+      - goos: windows
+        format: zip
+
+brews:
+  - repository:
+      owner: vaibhav0806
+      name: homebrew-tap
+    homepage: "https://github.com/vaibhav0806/pixel-tamagotchi"
+    description: "A tamagotchi cat that lives in your terminal"
+    license: "MIT"
+    install: |
+      bin.install "pixel-tamagotchi"
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^chore:"

@@ -12,7 +12,7 @@ type Config struct {
 
 func DefaultDir() string {
 	home, _ := os.UserHomeDir()
-	return filepath.Join(home, ".terminal-pet")
+	return filepath.Join(home, ".pixel-tamagotchi")
 }
 
 func DefaultStatePath() string {

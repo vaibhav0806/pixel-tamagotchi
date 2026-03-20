@@ -6,8 +6,8 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
-	"github.com/vaibhav/terminal-pet/internal/pet"
-	"github.com/vaibhav/terminal-pet/internal/tui"
+	"github.com/vaibhav0806/pixel-tamagotchi/internal/pet"
+	"github.com/vaibhav0806/pixel-tamagotchi/internal/tui"
 )
 
 var moodFlag string
