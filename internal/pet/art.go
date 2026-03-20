@@ -13,111 +13,35 @@ func Render(mood Mood) string {
 }
 
 // AnimationFrames returns all animation frames for a given mood.
-// Each frame is a complete 7-line cat art string.
-// All frames are exactly 7 lines for consistent canvas rendering.
+// Each frame is 5 lines: emoji, ears, face, body, paws.
 func AnimationFrames(mood Mood) []string {
+	e := mood.Emoji()
 	switch mood {
 	case MoodHappy:
 		return []string{
-			// Alert, tail up, whiskers out
-			"        " + mood.Emoji() + "\n" +
-				"    /\\_/\\  )\n" +
-				"  =( o.o )=\n" +
-				"    )   (\n" +
-				"   (     )\n" +
-				"    |   |\n" +
-				"   =|___|=",
-			// Smiling, tail wag
-			"        " + mood.Emoji() + "\n" +
-				"    /\\_/\\  ~\n" +
-				"  =( ^.^ )=\n" +
-				"    )   (\n" +
-				"   ( ~ ~ )\n" +
-				"    |   |\n" +
-				"   =|___|=",
-			// Playful paws
-			"     " + mood.Emoji() + "\n" +
-				"  (  /\\_/\\\n" +
-				"  =( o.o )=\n" +
-				"    )   (\n" +
-				"   (     )\n" +
-				"    |   |\n" +
-				"   =|___|=",
+			"      " + e + "\n  /\\_/\\  ~\n=( o.o )=\n /     \\\n( u   u )",
+			"      " + e + "\n  /\\_/\\  )\n=( ^.^ )=\n /     \\\n( u   u )",
+			"   " + e + "\n(  /\\_/\\\n=( o.o )=\n /     \\\n( u   u )",
 		}
 	case MoodHungry:
 		return []string{
-			// Sitting, looking up at food
-			"       " + mood.Emoji() + "\n" +
-				"    /\\_/\\\n" +
-				"  =( o.o )=\n" +
-				"    )   (\n" +
-				"   (     )\n" +
-				"    |   |\n" +
-				"   =|___|=",
-			// Reaching for food
-			"       " + mood.Emoji() + "\n" +
-				"    /\\_/\\\n" +
-				"  =( o.o )=" + "\u3064" + "\n" +
-				"    )   (\n" +
-				"   (     )\n" +
-				"    |   |\n" +
-				"   =|___|=",
-			// Frustrated
-			"       " + mood.Emoji() + "\n" +
-				"    /\\_/\\\n" +
-				"  =( >.< )=\n" +
-				"    )   (\n" +
-				"   (     )\n" +
-				"    |   |\n" +
-				"   =|___|=",
+			"      " + e + "\n  /\\_/\\\n=( o.o )=\n /     \\\n( u   u )",
+			"      " + e + "\n  /\\_/\\\n=( o.o )=" + "\u3064" + "\n /     \\\n( u   u )",
+			"      " + e + "\n  /\\_/\\\n=( >.< )=\n /     \\\n( u   u )",
 		}
 	case MoodSad:
 		return []string{
-			// Curled up, crying
-			"       " + mood.Emoji() + "\n" +
-				"    /\\_/\\\n" +
-				"  =( T.T )=\n" +
-				"    )   (\n" +
-				"   (     )\n" +
-				"    )   (\n" +
-				"     \\_/",
-			// More crying, swaying
-			"       " + mood.Emoji() + "\n" +
-				"    /\\_/\\\n" +
-				"  =( ;_; )=\n" +
-				"    )   (\n" +
-				"   (     )\n" +
-				"    )   (\n" +
-				"     \\_/",
+			"      " + e + "\n  /\\_/\\\n=( T.T )=\n /     \\\n( u   u )",
+			"      " + e + "\n  /\\_/\\\n=( ;_; )=\n /     \\\n( u   u )",
 		}
 	case MoodAsleep:
 		return []string{
-			// Curled into ball
-			"       " + mood.Emoji() + "\n" +
-				"    /\\_/\\\n" +
-				"  =( -.- )=\n" +
-				"    )   (\n" +
-				"   ( ~~~ )\n" +
-				"    \\___/\n" +
-				"",
-			// Breathing
-			"       " + mood.Emoji() + "\n" +
-				"    /\\_/\\\n" +
-				"  =( -.- )=\n" +
-				"    )    (\n" +
-				"   (  ~  )\n" +
-				"    \\___/\n" +
-				"",
+			"      " + e + "\n  /\\_/\\\n=( -.- )=\n /     \\\n( u _ u )",
+			"      " + e + "\n  /\\_/\\\n=( -.- )=\n /     \\\n(  u_u  )",
 		}
 	default:
 		return []string{
-			"        " + mood.Emoji() + "\n" +
-				"    /\\_/\\\n" +
-				"  =( o.o )=\n" +
-				"    )   (\n" +
-				"   (     )\n" +
-				"    |   |\n" +
-				"   =|___|=",
+			"      " + e + "\n  /\\_/\\\n=( o.o )=\n /     \\\n( u   u )",
 		}
 	}
 }

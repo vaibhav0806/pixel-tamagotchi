@@ -79,14 +79,14 @@ func (ps *ParticleSystem) Update() {
 	}
 	rate := moodSpawnRate[ps.mood]
 	for i := 0; i < rate; i++ {
-		// Spawn within a ~20-char band centered on the cat in a 30-wide canvas.
-		spawnX := 3 + rand.Intn(24)
-		// Spawn near the cat vertically in a 10-tall canvas (cat at rows 1-7).
+		// Spawn within a ~18-char band centered on the cat in a 26-wide canvas.
+		spawnX := 3 + rand.Intn(20)
+		// Spawn near the cat vertically in an 8-tall canvas (cat at rows 1-5).
 		var spawnY int
 		if ps.mood == pet.MoodSad {
 			spawnY = 2 + rand.Intn(2) // start near cat face, fall down
 		} else {
-			spawnY = 7 + rand.Intn(2) // start below the cat body, float up
+			spawnY = 5 + rand.Intn(2) // start below the cat body, float up
 		}
 		ps.particles = append(ps.particles, Particle{
 			x:    spawnX,

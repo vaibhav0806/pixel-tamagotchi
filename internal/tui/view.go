@@ -11,8 +11,8 @@ import (
 )
 
 const (
-	canvasWidth  = 30
-	canvasHeight = 10
+	canvasWidth  = 26
+	canvasHeight = 8
 	catStartRow  = 1
 	catStartCol  = 7
 )
