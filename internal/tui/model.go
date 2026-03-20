@@ -25,6 +25,10 @@ type Model struct {
 	animTick  int
 	earTwitch bool
 	particles ParticleSystem
+
+	// Mood transition notification.
+	notification    string
+	notificationTTL int // seconds remaining to show
 }
 
 // MoodOverride, when >= 0, locks the mood to a specific value (for dev testing).
@@ -81,9 +85,20 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		if MoodOverride < 0 {
 			newMood := pet.ComputeMood(m.state.LastCommitAt)
 			if newMood != m.mood {
+				oldMood := m.mood
 				m.mood = newMood
+				m.message = pet.RandomMessage(m.mood)
 				m.particles.SetMood(m.mood)
 				m.frame = 0
+				m.notification = moodChangeNotification(oldMood, m.mood)
+				m.notificationTTL = 5
+				return m, tea.Batch(tickEvery(time.Second), tea.Printf("\a"))
+			}
+		}
+		if m.notificationTTL > 0 {
+			m.notificationTTL--
+			if m.notificationTTL == 0 {
+				m.notification = ""
 			}
 		}
 		return m, tickEvery(time.Second)
@@ -98,6 +113,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.message = pet.RandomMessage(m.mood)
 					m.particles.SetMood(m.mood)
 					m.frame = 0
+					m.notification = moodChangeNotification(oldMood, m.mood)
+					m.notificationTTL = 5
+					return m, tea.Batch(refreshStateAfter(m.statePath, 3*time.Second), tea.Printf("\a"))
 				}
 			}
 		}
@@ -129,6 +147,29 @@ func refreshState(path string) tea.Cmd {
 	return func() tea.Msg {
 		state, _ := pet.LoadState(path)
 		return stateRefreshMsg{state: state}
+	}
+}
+
+func moodChangeNotification(from, to pet.Mood) string {
+	// Mood improved (committed!)
+	if to < from {
+		switch to {
+		case pet.MoodHappy:
+			return "🎉 Pixel woke up! She's so happy to see you!"
+		default:
+			return "✨ Pixel is feeling better!"
+		}
+	}
+	// Mood got worse
+	switch to {
+	case pet.MoodHungry:
+		return "⚠️  Pixel is getting hungry... commit something!"
+	case pet.MoodSad:
+		return "😢 Pixel is sad... she misses your commits"
+	case pet.MoodAsleep:
+		return "💤 Pixel fell asleep... commit to wake her up"
+	default:
+		return ""
 	}
 }
 

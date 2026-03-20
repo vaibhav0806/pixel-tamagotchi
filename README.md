@@ -85,7 +85,8 @@ No permadeath. Pixel always comes back.
 |---------|-------------|
 | `pixel` | Quick status check |
 | `pixel init` | Set up Pixel and install git hook |
-| `pixel watch` | Animated TUI dashboard |
+| `pixel watch` | Animated TUI dashboard (bell on mood changes) |
+| `pixel stats` | Lifetime stats — commits, streaks, days together |
 | `pixel reset` | Wake Pixel up, reset streak |
 | `pixel uninstall` | Remove hooks and clean up |
 

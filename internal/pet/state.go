@@ -13,6 +13,7 @@ type State struct {
 	CreatedAt     time.Time `json:"created_at"`
 	TotalCommits  int       `json:"total_commits"`
 	CurrentStreak int       `json:"current_streak"`
+	BestStreak    int       `json:"best_streak"`
 }
 
 func LoadState(path string) (*State, error) {
@@ -56,6 +57,10 @@ func RecordCommit(s *State) {
 		// same day, streak unchanged
 	default:
 		s.CurrentStreak = 1
+	}
+
+	if s.CurrentStreak > s.BestStreak {
+		s.BestStreak = s.CurrentStreak
 	}
 
 	s.LastCommitAt = now

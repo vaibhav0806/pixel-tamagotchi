@@ -80,18 +80,30 @@ func (m Model) View() string {
 	statsLine := fmt.Sprintf("%s  %s  |  Streak: %d 🔥  |  Last commit: %s ago",
 		m.mood.Emoji(), m.mood.String(), m.state.CurrentStreak, elapsedStr)
 
-	content := lipgloss.JoinVertical(
-		lipgloss.Center,
+	notifStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.Color("#fbbf24")).
+		Bold(true)
+
+	parts := []string{
 		titleStyle.Render("🐱 Pixel"),
 		"",
 		artStyle.Render(canvas),
 		messageStyle.Render(fmt.Sprintf("%q", m.message)),
+	}
+
+	if m.notification != "" {
+		parts = append(parts, "", notifStyle.Render(m.notification))
+	}
+
+	parts = append(parts,
 		"",
 		statsStyle.Render(statsLine),
 		moodBar,
 		"",
 		dimStyle.Render("q: quit"),
 	)
+
+	content := lipgloss.JoinVertical(lipgloss.Center, parts...)
 
 	borderStyle := lipgloss.NewStyle().
 		Border(lipgloss.RoundedBorder()).
